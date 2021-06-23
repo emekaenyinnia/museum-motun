@@ -1,4 +1,5 @@
-<?php include ('dbsettings.php');?>
+<?php 
+include ('dbsettings.php');?>
 <?php include ('head.php');?>
 
 

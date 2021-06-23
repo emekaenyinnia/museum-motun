@@ -19,7 +19,7 @@
 								<a class="m-link" href="#">Explore</a>
 								<ul class="m-dropdown">
 									<li class="m-dropdown-item">
-										<a class="m-dropdown-link" href="update-password">Update Password</a>
+										<a class="m-dropdown-link" href="update-password.php">Update Password</a>
 									</li>
 
 									<?php if($_SESSION['type'] == "admin"){?>

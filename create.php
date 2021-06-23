@@ -67,17 +67,56 @@
 // }
 
 if(isset($_POST['create'])){
-	$media = ($_POST['image']);
- $header = htmlspecialchars($_POST['header']);
- $origin = htmlspecialchars($_POST['location']);
- $section = htmlspecialchars($_POST['section']);
- $body = $_POST['body'];
+	$header = htmlspecialchars($_POST['header']);
+	$origin = htmlspecialchars($_POST['location']);
+	$section = htmlspecialchars($_POST['section']);
+	$body = $_POST['body'];
+	
+	
+	$img_name = $_FILES['file']['name'];
+	$img_size = $_FILES['file']['size'];
+	$img_tmp = $_FILES['file']['tmp_name'];
+	$img_error = $_FILES['file']['error'];
+	$img_type = $_FILES['file']['type'];
+	
+	//   print_r($_FILES['file']);  
+	//  print_r($_FILES['file']['size']);  
 
-echo $media;
+$fileExt = explode('.', $img_name);
+//the explode is used to take the name from the  $_FILES['file']['name'] eg jpg
+$fileActualExt = strtolower(end($fileExt));
+// the strtolower is to convert the name in  $_FILES['file']['name'] to lowercase
+$allowed = array('jpg', 'jjpeg', 'png', 'pdf');
+// the type of file name you want to allow in the database
+if(in_array($fileActualExt, $allowed)){
+// if the extention is inside the array
+if($img_error === 0){
+	// to check if there is no error 
+if($img_size < 1000000){
+$fileNameNew = uniqid('', true).".".$fileActualExt;
+$fileDestination = 'files/'.$fileNameNew;
+move_uploaded_file($img_tmp, $fileDestination);
 
- if(!empty($media) &&  !empty($header) && !empty($origin) && !empty($section) && !empty($body)){
+var_dump($fileNameNew);
+}else{
+	echo "your file is too big";
+}
 
-	$sql = "INSERT INTO tbl_gallery (media, header, location, body, section) VALUES('$media', '$header', '$location', '$body', '$section')";
+}else{
+	echo 'there was an error uploading your file ';
+}
+}
+else{
+	echo 'you cannot upload this file';
+
+}
+	
+	if(!empty($fileNameNew) &&  !empty($header) && !empty($origin) && !empty($section) && !empty($body)){ 
+
+
+
+
+	$sql = "INSERT INTO tbl_gallery (media, header, location, body, section) VALUES('$fileNameNew', '$header', '$origin', '$body', '$section')";
 	$create = $conn->query($sql);
 
 
@@ -97,15 +136,17 @@ echo $media;
 							<div class="col-12 col-lg-10 offset-lg-1 col-xl-8 offset-xl-2">
 								<p class="font-small uppercase font-family-secondary"><a href="#">Create</a></p>
 								<div class="margin-top-20 margin-bottom-20">
-									<form action="" method="post"enctype="multipart/form-data">   
-									 <center> <?php echo $message;?></center>
+									<form action="" method="post" enctype="multipart/form-data">   
+									 <center> <?php $message;?>
+									 </center>
+									
          <br>
 <input type="text" name="header" class="form-control"  placeholder="description ...." required>
 <input type="text" name="location" class="form-control" placeholder="state of origin ...." required>
 <textarea name="body" placeholder="text" required></textarea>
 <br>
 <input type="text" name="section" class="form-control" placeholder="section ...." required>
-<input type="file" name="image" class="btn btn-primary" placeholder="Add Image ...." required>
+<input type="file" name="file" class="btn btn-primary" placeholder="Add Image ...." required>
 <input type="submit" name="create" value="Create"class="btn btn-success"> 
 
 </form>
